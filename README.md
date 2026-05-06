@@ -45,7 +45,7 @@ Tujuan konfigurasi:
 Download git
 
 ```
-halo
+wget https://github.com/ica4me/wireguard-server-client.git
 ```
 
 Isi ZIP/project:
