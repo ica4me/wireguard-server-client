@@ -45,7 +45,7 @@ Tujuan konfigurasi:
 Download git
 
 ```
-wget https://github.com/ica4me/wireguard-server-client.git
+git clone https://github.com/ica4me/wireguard-server-client.git wireguard-conf
 ```
 
 Isi ZIP/project:
