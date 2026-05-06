@@ -51,7 +51,8 @@ git clone https://github.com/ica4me/wireguard-server-client.git wireguard-conf
 Isi ZIP/project:
 
 ```text
-wireguard-conf
+.
+├─wireguard-conf
 ├── wg-server/
 │   ├── docker-compose.yml
 │   ├── entrypoint.sh
