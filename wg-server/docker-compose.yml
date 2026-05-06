@@ -1,0 +1,26 @@
+services:
+  wg-server:
+    image: alpine:3.20
+    container_name: wg-server
+    restart: unless-stopped
+
+    # Penting:
+    # - host network dibutuhkan agar interface wg muncul di namespace host
+    # - tidak memakai privileged: true
+    network_mode: host
+
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+      - NET_RAW
+
+    devices:
+      - /dev/net/tun:/dev/net/tun
+
+    env_file:
+      - .env
+
+    volumes:
+      - ./entrypoint.sh:/entrypoint.sh:ro
+
+    command: ["/bin/sh", "/entrypoint.sh"]

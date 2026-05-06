@@ -1,0 +1,39 @@
+
+# Aktifkan sekarang
+sysctl -w net.ipv4.ip_forward=1
+
+# Tanam permanen ke system (survive reboot)
+echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+sysctl -p
+
+# Verifikasi
+cat /proc/sys/net/ipv4/ip_forward   # harus output: 1
+
+wg genkey | tee client_privatekey | wg pubkey > client_publickey
+
+#	 Edit .env — isi 3 nilai ini:
+#    WG_CLIENT_PRIVATE_KEY = isi dari client_privatekey
+#    WG_SERVER_PUBLIC_KEY  = public key server WireGuard
+#    WG_SERVER_ENDPOINT    = IP/domain server
+#    WG_CLIENT_IP          = misal 100.10.11.2
+
+# 4. Permission & jalankan
+chmod +x entrypoint.sh
+docker compose up -d
+docker compose logs -f
+
+
+====
+⚠️ Yang Perlu Dikonfigurasi di Server (MikroTik)
+Agar client tunnel lain bisa akses 172.16.x.0/24, di server WireGuard tambahkan:
+
+Peer dengan public key client ini, allowed-address 100.10.11.2/32
+Route static: 172.16.1.0/24 - 172.16.5.0/24 → via 100.10.11.2
+
+
+root@tunnel-wg-yudi:~/wg-client# wg genkey | tee client_privatekey | wg pubkey > client_publickey
+root@tunnel-wg-yudi:~/wg-client# cat client_privatekey
+4Bo9niQEQ5T9+LbPEVhdAmkgyUiaPzRxg40w+T0Mwmk=
+root@tunnel-wg-yudi:~/wg-client# cat client_publickey
+52vDoxhLW3ApfikAizZo6ykKMBut/GSWCbUAaDEvvHo=
+root@tunnel-wg-yudi:~/wg-client#

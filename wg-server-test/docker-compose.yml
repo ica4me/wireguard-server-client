@@ -1,0 +1,33 @@
+version: "3.9"
+
+# ============================================================
+#  WireGuard Server - Docker Compose
+#  Host: Ubuntu 22.04
+#  Mode: Server (Listen Port aktif)
+#  Network: host mode (interface dibuat langsung di host)
+#  Restart: unless-stopped (ephemeral: bersih saat mati)
+# ============================================================
+
+services:
+  wg-server:
+    image: alpine:latest
+    container_name: wg-server-test
+    restart: unless-stopped
+    # Gunakan network stack host langsung
+    network_mode: host
+    # Hak akses yang dibutuhkan untuk WireGuard & iptables tanpa privileged: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+      - NET_RAW
+    volumes:
+      - /lib/modules:/lib/modules:ro
+      - ./entrypoint.sh:/entrypoint.sh:ro
+    env_file:
+      - .env
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

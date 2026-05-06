@@ -1,0 +1,67 @@
+version: "3.9"
+
+# ============================================================
+#  WireGuard Client — Docker Compose
+#  Host: tunnel-wg-yudi (Ubuntu 22.04)
+#  Mode: Client → konek ke server WireGuard (MikroTik/lainnya)
+#  Network: host mode — interface wg-mikrotik dibuat di host
+#  Restart: unless-stopped (ephemeral: setting hilang saat stop)
+# ============================================================
+
+services:
+  wg-mikrotik:
+    image: alpine:latest
+    container_name: wg-mikrotik
+    restart: unless-stopped
+
+    # ── Gunakan network stack host langsung ───────────────
+    network_mode: host
+
+    # ── Hak akses yang dibutuhkan untuk WireGuard & iptables
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+      - NET_RAW
+
+    # ── Privileged: TIDAK dipakai — ip_forward diset di host
+    #    via /etc/sysctl.conf (permanen, di luar container)
+
+    # ── Akses kernel modules WireGuard ────────────────────
+    volumes:
+      - /lib/modules:/lib/modules:ro
+      - ./entrypoint.sh:/entrypoint.sh:ro
+
+    # ── Semua konfigurasi dari .env (ephemeral) ───────────
+    env_file:
+      - .env
+
+    # ── Variabel eksplisit dari .env ──────────────────────
+    environment:
+      - WG_INTERFACE=${WG_INTERFACE}
+      - WG_CLIENT_IP=${WG_CLIENT_IP}
+      - WG_CLIENT_PRIVATE_KEY=${WG_CLIENT_PRIVATE_KEY}
+      - WG_SERVER_PUBLIC_KEY=${WG_SERVER_PUBLIC_KEY}
+      - WG_SERVER_ENDPOINT=${WG_SERVER_ENDPOINT}
+      - WG_SERVER_PORT=${WG_SERVER_PORT}
+      - WG_MTU=${WG_MTU}
+      - WG_KEEPALIVE=${WG_KEEPALIVE}
+      - WG_ALLOWED_IPS=${WG_ALLOWED_IPS}
+      - LOCAL_NET_1=${LOCAL_NET_1}
+      - LOCAL_NET_2=${LOCAL_NET_2}
+      - LOCAL_NET_3=${LOCAL_NET_3}
+      - LOCAL_NET_4=${LOCAL_NET_4}
+      - LOCAL_NET_5=${LOCAL_NET_5}
+      - LAN_IFACE_1=${LAN_IFACE_1}
+      - LAN_IFACE_2=${LAN_IFACE_2}
+      - LAN_IFACE_3=${LAN_IFACE_3}
+      - LAN_IFACE_4=${LAN_IFACE_4}
+
+    # ── Entrypoint: setup, run, cleanup saat stop ─────────
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+
+    # ── Logging ──────────────────────────────────────────
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
