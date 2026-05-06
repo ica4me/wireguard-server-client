@@ -2,7 +2,7 @@ version: "3.9"
 
 # ============================================================
 #  WireGuard Client — Docker Compose
-#  Host: tunnel-wg-yudi (Ubuntu 22.04)
+#  Host: tunnel-wg-client (Ubuntu 22.04)
 #  Mode: Client → konek ke server WireGuard (MikroTik/lainnya)
 #  Network: host mode — interface wg-mikrotik dibuat di host
 #  Restart: unless-stopped (ephemeral: setting hilang saat stop)

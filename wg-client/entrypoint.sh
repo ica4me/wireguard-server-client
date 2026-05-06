@@ -1,7 +1,7 @@
 #!/bin/sh
 # ============================================================
 #  WireGuard Client Entrypoint
-#  VM: tunnel-wg-yudi | Image: alpine | Mode: host network
+#  VM: tunnel-wg-client | Image: alpine | Mode: host network
 #  Semua setting EPHEMERAL — bersih saat container mati
 # ============================================================
 set -e

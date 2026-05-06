@@ -31,9 +31,9 @@ Peer dengan public key client ini, allowed-address 100.10.11.2/32
 Route static: 172.16.1.0/24 - 172.16.5.0/24 → via 100.10.11.2
 
 
-root@tunnel-wg-yudi:~/wg-client# wg genkey | tee client_privatekey | wg pubkey > client_publickey
-root@tunnel-wg-yudi:~/wg-client# cat client_privatekey
+root@tunnel-wg-client:~/wg-client# wg genkey | tee client_privatekey | wg pubkey > client_publickey
+root@tunnel-wg-client:~/wg-client# cat client_privatekey
 4Bo9niQEQ5T9+LbPEVhdAmkgyUiaPzRxg40w+T0Mwmk=
-root@tunnel-wg-yudi:~/wg-client# cat client_publickey
+root@tunnel-wg-client:~/wg-client# cat client_publickey
 52vDoxhLW3ApfikAizZo6ykKMBut/GSWCbUAaDEvvHo=
-root@tunnel-wg-yudi:~/wg-client#
+root@tunnel-wg-client:~/wg-client#

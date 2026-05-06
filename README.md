@@ -1,4 +1,4 @@
-# README — WireGuard Tunnel Docker: Server & Client
+# WireGuard Tunnel Docker: Server & Client
 
 > Testing OS : Ubuntu 22.04/24.04 atau Linux systemd lain.  
 > Mode Docker: `network_mode: host`, Interface WireGuard dibuat langsung pada network namespace host.
@@ -22,7 +22,7 @@ Contoh topologi yang dipakai:
        |
        | route via 100.10.11.2
        v
-[VM Client Router: tunnel-wg-yudi]
+[VM Client Router: tunnel-wg-client]
   WG IP : 100.10.11.2
   LAN   : 172.16.1.0/24
           172.16.2.0/24
@@ -385,11 +385,11 @@ Tambahkan route berikut agar MikroTik mengirim trafik LAN ke client router `100.
 Contoh command MikroTik RouterOS:
 
 ```routeros
-/ip route add dst-address=172.16.1.0/24 gateway=100.10.11.2 comment="via wg client tunnel-wg-yudi"
-/ip route add dst-address=172.16.2.0/24 gateway=100.10.11.2 comment="via wg client tunnel-wg-yudi"
-/ip route add dst-address=172.16.3.0/24 gateway=100.10.11.2 comment="via wg client tunnel-wg-yudi"
-/ip route add dst-address=172.16.4.0/24 gateway=100.10.11.2 comment="via wg client tunnel-wg-yudi"
-/ip route add dst-address=172.16.5.0/24 gateway=100.10.11.2 comment="via wg client tunnel-wg-yudi"
+/ip route add dst-address=172.16.1.0/24 gateway=100.10.11.2 comment="via wg client tunnel-wg-client"
+/ip route add dst-address=172.16.2.0/24 gateway=100.10.11.2 comment="via wg client tunnel-wg-client"
+/ip route add dst-address=172.16.3.0/24 gateway=100.10.11.2 comment="via wg client tunnel-wg-client"
+/ip route add dst-address=172.16.4.0/24 gateway=100.10.11.2 comment="via wg client tunnel-wg-client"
+/ip route add dst-address=172.16.5.0/24 gateway=100.10.11.2 comment="via wg client tunnel-wg-client"
 ```
 
 ### 8.3 Pastikan firewall MikroTik mengizinkan forward
@@ -482,7 +482,7 @@ WG_OPEN_FIREWALL_PORT=1
 WG_ENABLE_FORWARD_RULES=1
 WG_ENABLE_NAT=0
 
-PEER1_NAME=tunnel-wg-yudi
+PEER1_NAME=tunnel-wg-client
 PEER1_PUBLIC_KEY=ISI_PUBLIC_KEY_CLIENT
 PEER1_ALLOWED_IPS=100.10.11.2/32,172.16.1.0/24,172.16.2.0/24,172.16.3.0/24,172.16.4.0/24,172.16.5.0/24
 PEER1_PERSISTENT_KEEPALIVE=25

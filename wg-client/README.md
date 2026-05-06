@@ -1,5 +1,6 @@
 # WireGuard Client — Docker Setup
-## Host: tunnel-wg-yudi (Ubuntu 22.04)
+
+## Host: tunnel-wg-client (Ubuntu 22.04)
 
 ---
 
@@ -18,6 +19,7 @@ wg-client/
 ## Langkah Setup
 
 ### 1. Generate Key (jalankan di host atau VM lain)
+
 ```bash
 # Generate private key client
 wg genkey | tee client_privatekey | wg pubkey > client_publickey
@@ -27,9 +29,11 @@ cat client_publickey    # → daftarkan sebagai Peer di server WireGuard
 ```
 
 ### 2. Edit .env
+
 ```bash
 nano .env
 ```
+
 Wajib diisi:
 | Variable | Keterangan |
 |---|---|
@@ -40,22 +44,27 @@ Wajib diisi:
 | `WG_CLIENT_IP` | IP tunnel untuk VM ini, contoh: 100.10.11.2 |
 
 ### 3. Daftarkan Peer di Server (MikroTik/WireGuard Server)
+
 Tambahkan peer dengan:
+
 - **Public Key**: isi dari `client_publickey`
-- **Allowed Address**: `100.10.11.2/32`  
+- **Allowed Address**: `100.10.11.2/32`
 - **Tambahkan route** di server: `172.16.1.0/24 - 172.16.5.0/24` → via `100.10.11.2`
 
 ### 4. Set permission entrypoint
+
 ```bash
 chmod +x entrypoint.sh
 ```
 
 ### 5. Jalankan Container
+
 ```bash
 docker compose up -d
 ```
 
 ### 6. Cek Status
+
 ```bash
 # Lihat log container
 docker compose logs -f wg-mikrotik
@@ -84,7 +93,7 @@ iptables -t nat -L POSTROUTING -n -v
   100.10.11.1
        │  tunnel 100.10.11.0/24
        ▼
-[VM ini: tunnel-wg-yudi]
+[VM ini: tunnel-wg-client]
   wg-mikrotik: 100.10.11.2
   ens19: 172.16.1.11  ──→ 172.16.1.0/24
   ens20: 172.16.2.11  ──→ 172.16.2.0/24
