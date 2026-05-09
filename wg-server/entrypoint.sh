@@ -69,13 +69,33 @@ ORIGINAL_IPV4_FORWARD="$(cat /proc/sys/net/ipv4/ip_forward 2>/dev/null || echo 0
 echo "[WG-SERVER] Original host net.ipv4.ip_forward=${ORIGINAL_IPV4_FORWARD}"
 
 if [ "$WG_ENABLE_IPV4_FORWARD" = "1" ]; then
-    echo "[WG-SERVER] Enabling IPv4 forwarding ephemerally..."
-    sysctl -w net.ipv4.ip_forward=1 >/dev/null
+    CURRENT_IPV4_FORWARD="$(cat /proc/sys/net/ipv4/ip_forward 2>/dev/null || echo 0)"
+
+    if [ "$CURRENT_IPV4_FORWARD" = "1" ]; then
+        echo "[WG-SERVER] IPv4 forwarding already enabled."
+    else
+        echo "[WG-SERVER] Enabling IPv4 forwarding ephemerally..."
+
+        if sysctl -w net.ipv4.ip_forward=1 >/dev/null 2>&1; then
+            echo "[WG-SERVER] IPv4 forwarding enabled successfully."
+        else
+            echo "[WG-SERVER] WARNING: cannot change net.ipv4.ip_forward from inside container."
+            echo "[WG-SERVER] WARNING: Please enable it on the host with:"
+            echo "[WG-SERVER]          sysctl -w net.ipv4.ip_forward=1"
+            echo "[WG-SERVER] Continuing because this may already be controlled by the host/container runtime."
+        fi
+    fi
 else
-    echo "[WG-SERVER] IPv4 forwarding not changed."
+    echo "[WG-SERVER] IPv4 forwarding not changed by container."
 fi
 
-echo "[WG-SERVER] Current host net.ipv4.ip_forward=$(cat /proc/sys/net/ipv4/ip_forward)"
+CURRENT_IPV4_FORWARD="$(cat /proc/sys/net/ipv4/ip_forward 2>/dev/null || echo unknown)"
+echo "[WG-SERVER] Current host net.ipv4.ip_forward=${CURRENT_IPV4_FORWARD}"
+
+if [ "$WG_ENABLE_IPV4_FORWARD" = "1" ] && [ "$CURRENT_IPV4_FORWARD" != "1" ]; then
+    echo "[WG-SERVER] WARNING: IPv4 forwarding is still not enabled."
+    echo "[WG-SERVER] WARNING: WireGuard forwarding between peers/networks may not work."
+fi
 
 # ------------------------------------------------------------
 # Cleanup helper
