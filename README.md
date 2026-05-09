@@ -75,6 +75,11 @@ Pada saat deployment, file `example.env` harus disalin menjadi `.env`:
 cp example.env .env
 nano .env
 ```
+Perbaiki Izin File
+```bash
+chmod +x entrypoint.sh
+chmod +x generate-keys.sh
+```
 
 ---
 
